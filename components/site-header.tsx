@@ -37,7 +37,9 @@ export function SiteHeader() {
               </div>
             </Link>
             <ThemeToggle />
-            <AuthAvatar />
+            <div className=" pl-2">
+              <AuthAvatar />
+            </div>
           </nav>
         </div>
       </div>
