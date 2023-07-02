@@ -19,16 +19,20 @@ export function MainNav({ items }: MainNavProps) {
   const router = useRouter()
   const currentRoute = usePathname()
   return (
-    <div className="flex gap-6 md:gap-10">
+    <div className="flex gap-6 sm:gap-10">
       {currentRoute !== "/" ? (
         <Link href="/" className="flex items-center space-x-2">
           <Icons.mLogo className="w-6 h-6" />
-          <span className="inline-block font-bold">{siteConfig.name}</span>
+          <span className="inline-block font-bold hidden sm:block">
+            {siteConfig.name}
+          </span>
         </Link>
       ) : (
         <Link href="/expenses" className="flex items-center space-x-2">
           <Icons.mLogo className="w-6 h-6" />
-          <span className="inline-block font-bold">{siteConfig.name}</span>
+          <span className="inline-block font-bold hidden sm:block">
+            {siteConfig.name}
+          </span>
         </Link>
       )}
 

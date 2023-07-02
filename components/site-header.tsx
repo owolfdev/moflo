@@ -2,6 +2,7 @@ import Link from "next/link"
 
 import { siteConfig } from "@/config/site"
 import { buttonVariants } from "@/components/ui/button"
+import { AuthAvatar } from "@/components/avatar"
 import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/main-nav"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -36,6 +37,7 @@ export function SiteHeader() {
               </div>
             </Link>
             <ThemeToggle />
+            <AuthAvatar />
           </nav>
         </div>
       </div>
