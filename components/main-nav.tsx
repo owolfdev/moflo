@@ -9,6 +9,8 @@ import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 
+import { LoginDialog } from "./login-dialog"
+
 interface MainNavProps {
   items?: NavItem[]
 }
@@ -29,6 +31,10 @@ export function MainNav({ items }: MainNavProps) {
           <span className="inline-block font-bold">{siteConfig.name}</span>
         </Link>
       )}
+
+      {/*  */}
+      <LoginDialog />
+      {/*  */}
 
       {items?.length ? (
         <nav className="flex gap-6">
