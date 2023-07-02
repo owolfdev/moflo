@@ -23,14 +23,14 @@ export function MainNav({ items }: MainNavProps) {
       {currentRoute !== "/" ? (
         <Link href="/" className="flex items-center space-x-2">
           <Icons.mLogo className="w-6 h-6" />
-          <span className="inline-block font-bold  sm:block">
+          <span className="hidden sm:inline-block font-bold ">
             {siteConfig.name}
           </span>
         </Link>
       ) : (
         <Link href="/expenses" className="flex items-center space-x-2">
           <Icons.mLogo className="w-6 h-6" />
-          <span className="inline-block font-bold sm:block">
+          <span className="hidden sm:inline-block font-bold ">
             {siteConfig.name}
           </span>
         </Link>
