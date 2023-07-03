@@ -4,8 +4,8 @@ import React, { useEffect } from "react"
 import Link from "next/link"
 import { useMediaQuery } from "react-responsive"
 
+import dataArray from "../../data/data"
 import { Expense, Payment, columns, columnsMobile } from "./columns"
-import dataArray from "./data"
 import { DataTable } from "./data-table"
 
 function DemoPage() {

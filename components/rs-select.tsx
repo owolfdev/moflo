@@ -111,7 +111,7 @@ const customStylesDef = (theme: any) => ({
     // Styles for the placeholder text
     ...provided,
     color: "#6B7280",
-    fontSize: "14px",
+    fontSize: "16px",
   }),
 
   multiValue: (provided: any, state: any) => ({
@@ -239,17 +239,18 @@ export function RSSelect({
     </div>
   )
 }
-
 export function RSSelectMulti({
   items,
   setSelectedItems,
   selectedItems,
   instanceId,
+  placeholder,
 }: {
   items: string[]
   setSelectedItems: (items: string[]) => void
   selectedItems: string[]
   instanceId?: string
+  placeholder?: string
 }) {
   const { setTheme, theme } = useTheme()
   const [isClearable, setIsClearable] = useState(true)
@@ -275,9 +276,9 @@ export function RSSelectMulti({
           instanceId={instanceId}
           styles={customStyles}
           className=""
-          value={selectedItems.map((category) => ({
-            value: category,
-            label: category,
+          value={selectedItems.map((item) => ({
+            value: item,
+            label: item,
           }))}
           onChange={(selectedOptions) => {
             const selectedValues = selectedOptions.map((option) => option.value)
@@ -288,6 +289,11 @@ export function RSSelectMulti({
             label: item,
           }))}
           isMulti
+          defaultValue={selectedItems.map((category) => ({
+            value: "",
+            label: "",
+          }))}
+          placeholder={placeholder}
         />
       </div>
     </div>

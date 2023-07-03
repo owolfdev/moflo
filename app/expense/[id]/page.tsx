@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 
+import dataArray from "../../../data/data"
 import { Expense } from "../../expenses/columns"
-import dataArray from "../../expenses/data"
 
 export default function PaymentPage({ params }: { params: { id: string } }) {
   const expenseData = dataArray
