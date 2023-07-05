@@ -74,7 +74,7 @@ const dummyOptionsForSelect = [
 
 const formSchema = z.object({
   // amount: z.number().positive().min(0).max(10000000),
-  amount: z.string().min(2).max(50),
+  amount: z.string().min(1).max(50),
   description: z.string().min(2).max(1000),
   merchant: z.string().min(2).max(50),
   location: z.string().min(2).max(50),
