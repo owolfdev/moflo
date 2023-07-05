@@ -152,11 +152,13 @@ export function RSSelect({
   setSelectedItem,
   controls = false,
   instanceId,
+  placeholder,
 }: {
   items: string[]
   setSelectedItem: (item: string) => void
   controls?: boolean
   instanceId?: string
+  placeholder?: string
 }) {
   const { setTheme, theme } = useTheme()
   const [isClearable, setIsClearable] = useState(true)
@@ -183,7 +185,7 @@ export function RSSelect({
           styles={customStyles}
           className="basic-single"
           classNamePrefix="select"
-          defaultValue={{ value: items[0], label: items[0] }}
+          defaultValue={null}
           isDisabled={isDisabled}
           isLoading={isLoading}
           isClearable={isClearable}
@@ -192,6 +194,7 @@ export function RSSelect({
           name="color"
           options={items.map((item) => ({ value: item, label: item }))}
           onChange={(option) => option && setSelectedItem(option?.value)}
+          placeholder={placeholder}
         />
       </div>
       {controls && (
@@ -276,7 +279,7 @@ export function RSSelectMulti({
           instanceId={instanceId}
           styles={customStyles}
           className=""
-          value={selectedItems.map((item) => ({
+          value={selectedItems?.map((item) => ({
             value: item,
             label: item,
           }))}
@@ -289,7 +292,7 @@ export function RSSelectMulti({
             label: item,
           }))}
           isMulti
-          defaultValue={selectedItems.map((category) => ({
+          defaultValue={selectedItems?.map((category) => ({
             value: "",
             label: "",
           }))}

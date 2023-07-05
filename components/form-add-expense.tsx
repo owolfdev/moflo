@@ -73,36 +73,13 @@ const dummyOptionsForSelect = [
 ]
 
 const formSchema = z.object({
-  amount: z.number().positive().min(0).max(10000000),
+  // amount: z.number().positive().min(0).max(10000000),
+  amount: z.string().min(2).max(50),
   description: z.string().min(2).max(1000),
   merchant: z.string().min(2).max(50),
   location: z.string().min(2).max(50),
   account: z.string().min(2).max(50),
-
-  dob: z.date().min(new Date("1900-01-01")).max(new Date()), // Make dob optional
-  mobile: z.boolean().default(false).optional(),
-  type: z.enum(["all", "mentions", "none"], {
-    required_error: "You need to select a notification type.",
-  }),
-  multi: z.array(z.string()).nonempty(),
-  language: z.string({
-    required_error: "Please select a language.",
-  }),
-  email: z
-    .string({
-      required_error: "Please select an email to display.",
-    })
-    .email(),
-  marketing_emails: z.boolean().default(false).optional(),
-  security_emails: z.boolean(),
-  bio: z
-    .string()
-    .min(10, {
-      message: "Bio must be at least 10 characters.",
-    })
-    .max(1000, {
-      message: "Bio must not be longer than 1000 characters.",
-    }),
+  categories: z.array(z.string()).nonempty(),
 })
 
 export function ExpenseForm({ settings }: { settings: any }) {
@@ -112,15 +89,16 @@ export function ExpenseForm({ settings }: { settings: any }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      amount: "", // Set default amount to empty string
       description: "",
-      dob: undefined, // Set dob to undefined
-      mobile: true,
-      multi: [],
-      security_emails: true,
+      merchant: "",
+      location: "",
+      account: "",
+      categories: [],
     },
   })
 
-  const { handleSubmit, control } = form
+  const { handleSubmit, control, setValue } = form
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -147,6 +125,7 @@ export function ExpenseForm({ settings }: { settings: any }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
+        {/* amount */}
         <FormField
           control={form.control}
           name="amount"
@@ -154,19 +133,27 @@ export function ExpenseForm({ settings }: { settings: any }) {
             <FormItem>
               <FormLabel className="font-semibold text-md">Amount</FormLabel>
               <FormControl>
-                <Input
-                  className="input-no-zoom, sm:text-base text-lg"
-                  placeholder="Add an amount"
-                  {...field}
+                <Controller
+                  name="amount"
+                  control={form.control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="Add an amount"
+                      className="input-no-zoom, sm:text-base text-lg"
+                    />
+                  )}
                 />
               </FormControl>
-              {/* <FormDescription>
-                This is your public display name.
-              </FormDescription> */}
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {/* description */}
         <FormField
           control={form.control}
           name="description"
@@ -200,13 +187,13 @@ export function ExpenseForm({ settings }: { settings: any }) {
                 <RSSelect
                   instanceId="fruit"
                   items={settings.merchants}
-                  setSelectedItem={setSelectedMerchant}
+                  setSelectedItem={(item) => {
+                    setValue("merchant", item) // Set the value using React Hook Form only
+                  }}
                   controls={false}
+                  placeholder="Select a merchant"
                 />
               </FormControl>
-              {/* <FormDescription>
-                This is your real first name and will not be visible to public.
-              </FormDescription> */}
               <FormMessage />
             </FormItem>
           )}
@@ -233,24 +220,26 @@ export function ExpenseForm({ settings }: { settings: any }) {
           )}
         />
         {/* select categories */}
+
         <FormField
           control={form.control}
-          name="merchant"
+          name="categories"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="font-semibold text-md">Merchant</FormLabel>
+              <FormLabel className="font-semibold text-md">
+                Categories
+              </FormLabel>
               <FormControl>
                 <RSSelectMulti
                   instanceId="categories"
                   items={settings.categories}
-                  setSelectedItems={setSelectedCategories}
-                  selectedItems={selectedCategories}
+                  setSelectedItems={(items) => {
+                    setValue("categories", items as [string, ...string[]])
+                  }}
+                  selectedItems={field.value}
                   placeholder="Select categories"
                 />
               </FormControl>
-              {/* <FormDescription>
-                This is your real first name and will not be visible to public.
-              </FormDescription> */}
               <FormMessage />
             </FormItem>
           )}
@@ -266,18 +255,17 @@ export function ExpenseForm({ settings }: { settings: any }) {
                 <RSSelect
                   instanceId="account"
                   items={settings.accounts}
-                  setSelectedItem={setSelectedAccount}
+                  setSelectedItem={(item) => {
+                    setValue("account", item) // Set the value using React Hook Form only
+                  }}
                   controls={false}
+                  placeholder="Select an account"
                 />
               </FormControl>
-              {/* <FormDescription>
-                This is your real first name and will not be visible to public.
-              </FormDescription> */}
               <FormMessage />
             </FormItem>
           )}
         />
-
         <Button type="submit">Submit</Button>
       </form>
     </Form>

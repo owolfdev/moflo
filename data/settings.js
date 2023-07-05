@@ -1,5 +1,4 @@
 const merchants = [
-  "merchant",
   "Starbucks",
   "Cinema City",
   "TechWorld",
