@@ -42,7 +42,7 @@ function DemoPage() {
         </Link>
       </div>
       <div className="">
-        <div className="max-w-[800px]">
+        <div className="max-w-[980px]">
           {isMobile ? (
             <DataTable columns={columnsMobile} data={data} />
           ) : (
