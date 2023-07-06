@@ -45,7 +45,10 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { toast } from "@/components/ui/use-toast"
+import { ToastAction } from "@/components/ui/toast"
+import { toast, useToast } from "@/components/ui/use-toast"
+import FileUpload from "@/components/custom-file-picker"
+import { ToastDemo } from "@/components/custom-toast"
 import { RSSelect, RSSelectMulti } from "@/components/rs-select"
 import { MultiSelect } from "@/components/scn-multi-select"
 
@@ -72,6 +75,13 @@ const dummyOptionsForSelect = [
   { label: "admin@owolf.com", value: "admin@owolf.com" },
 ]
 
+// Define the file schema
+const fileSchema = z.object({
+  name: z.string(), // The name of the file
+  type: z.string(), // The MIME type of the file
+  size: z.number(), // The size of the file in bytes
+})
+
 const formSchema = z.object({
   // amount: z.number().positive().min(0).max(10000000),
   amount: z.string().min(1).max(50),
@@ -80,6 +90,7 @@ const formSchema = z.object({
   location: z.string().min(2).max(50),
   account: z.string().min(2).max(50),
   categories: z.array(z.string()).nonempty(),
+  receipt: fileSchema.optional(),
 })
 
 export function ExpenseForm({ settings }: { settings: any }) {
@@ -89,32 +100,31 @@ export function ExpenseForm({ settings }: { settings: any }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: "", // Set default amount to empty string
+      amount: "",
       description: "",
       merchant: "",
       location: "",
       account: "",
       categories: [],
+      receipt: {
+        name: "",
+        type: "",
+        size: 0,
+      },
     },
   })
+  const { toast } = useToast()
 
   const { handleSubmit, control, setValue } = form
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // const updatedValues = {
-    //   ...values,
-    //   multi: selectedCategories, // Insert the selected values into the updatedValues object
-    // }
-    console.log(values)
+    console.log("submitted values", values)
     toast({
-      title: "You submitted the following values:",
+      title: "Your expense has been recorded.",
+      description: `Expense Amount: $${values.amount}`,
       duration: 2000,
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      ),
+      action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
     })
   }
 
@@ -122,152 +132,195 @@ export function ExpenseForm({ settings }: { settings: any }) {
     event.target.classList.add("input-no-zoom")
   }
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
-        {/* amount */}
-        <FormField
-          control={form.control}
-          name="amount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="font-semibold text-md">Amount</FormLabel>
-              <FormControl>
-                <Controller
-                  name="amount"
-                  control={form.control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      placeholder="Add an amount"
-                      className="input-no-zoom, sm:text-base text-lg"
-                    />
-                  )}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+  const handleFileChange = (file: File | null) => {
+    if (file) {
+      // Update the receipt field
+      console.log("heres the file:", file)
+      setValue("receipt", {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+      })
+    }
+  }
 
-        {/* description */}
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="font-semibold text-md">
-                Description
-              </FormLabel>
-              <FormControl>
-                <Textarea
-                  className="input-no-zoom, sm:text-base text-lg"
-                  placeholder="Add a description"
-                  {...field}
-                />
-              </FormControl>
-              {/* <FormDescription>
+  const handleClick = () => {
+    console.log("toast test clicked")
+    toast({
+      title: "Hello, World!",
+      description: "This is a toast message.",
+      duration: 2000,
+    })
+  }
+
+  return (
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
+          {/* amount */}
+          <FormField
+            control={form.control}
+            name="amount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-semibold text-md">Amount</FormLabel>
+                <FormControl>
+                  <Controller
+                    name="amount"
+                    control={form.control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="Add an amount"
+                        className="input-no-zoom, sm:text-base text-lg"
+                      />
+                    )}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* description */}
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-semibold text-md">
+                  Description
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    className="input-no-zoom, sm:text-base text-lg"
+                    placeholder="Add a description"
+                    {...field}
+                  />
+                </FormControl>
+                {/* <FormDescription>
                 This is your real first name and will not be visible to public.
               </FormDescription> */}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* select merchant */}
-        <FormField
-          control={form.control}
-          name="merchant"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="font-semibold text-md">Merchant</FormLabel>
-              <FormControl>
-                <RSSelect
-                  instanceId="fruit"
-                  items={settings.merchants}
-                  setSelectedItem={(item) => {
-                    setValue("merchant", item) // Set the value using React Hook Form only
-                  }}
-                  controls={false}
-                  placeholder="Select a merchant"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* location */}
-        <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="font-semibold text-md">Location</FormLabel>
-              <FormControl>
-                <Input
-                  className="input-no-zoom, sm:text-base text-lg"
-                  placeholder="Add a location"
-                  {...field}
-                />
-              </FormControl>
-              {/* <FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* select merchant */}
+          <FormField
+            control={form.control}
+            name="merchant"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-semibold text-md">
+                  Merchant
+                </FormLabel>
+                <FormControl>
+                  <RSSelect
+                    instanceId="fruit"
+                    items={settings.merchants}
+                    setSelectedItem={(item) => {
+                      setValue("merchant", item, { shouldValidate: true }) // Set the value using React Hook Form only
+                    }}
+                    controls={false}
+                    placeholder="Select a merchant"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* location */}
+          <FormField
+            control={form.control}
+            name="location"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-semibold text-md">
+                  Location
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    className="input-no-zoom, sm:text-base text-lg"
+                    placeholder="Add a location"
+                    {...field}
+                  />
+                </FormControl>
+                {/* <FormDescription>
                 This is your public display name.
               </FormDescription> */}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* select categories */}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* select categories */}
 
-        <FormField
-          control={form.control}
-          name="categories"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="font-semibold text-md">
-                Categories
-              </FormLabel>
-              <FormControl>
-                <RSSelectMulti
-                  instanceId="categories"
-                  items={settings.categories}
-                  setSelectedItems={(items) => {
-                    setValue("categories", items as [string, ...string[]])
-                  }}
-                  selectedItems={field.value}
-                  placeholder="Select categories"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* select account */}
-        <FormField
-          control={form.control}
-          name="account"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="font-semibold text-md">Account</FormLabel>
-              <FormControl>
-                <RSSelect
-                  instanceId="account"
-                  items={settings.accounts}
-                  setSelectedItem={(item) => {
-                    setValue("account", item) // Set the value using React Hook Form only
-                  }}
-                  controls={false}
-                  placeholder="Select an account"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+          <FormField
+            control={form.control}
+            name="categories"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-semibold text-md">
+                  Categories
+                </FormLabel>
+                <FormControl>
+                  <RSSelectMulti
+                    instanceId="categories"
+                    items={settings.categories}
+                    setSelectedItems={(items) => {
+                      setValue("categories", items as [string, ...string[]], {
+                        shouldValidate: true,
+                      })
+                    }}
+                    selectedItems={field.value}
+                    placeholder="Select categories"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* select account */}
+          <FormField
+            control={form.control}
+            name="account"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-semibold text-md">Account</FormLabel>
+                <FormControl>
+                  <RSSelect
+                    instanceId="account"
+                    items={settings.accounts}
+                    setSelectedItem={(item) => {
+                      setValue("account", item, { shouldValidate: true }) // Set the value using React Hook Form only
+                    }}
+                    controls={false}
+                    placeholder="Select an account"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="receipt"
+            render={({ field }) => (
+              <FormItem className="flex flex-col w-[200px]">
+                <FormLabel className="font-semibold text-md">Receipt</FormLabel>
+                <FormControl>
+                  <FileUpload onChange={handleFileChange} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
+    </>
   )
 }
