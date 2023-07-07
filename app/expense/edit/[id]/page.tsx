@@ -1,24 +1,83 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import dataArray from "@/data/data"
+import { settings } from "@/data/settings"
 
-import { ExpenseForm } from "@/components/form-expense"
+import { ExpenseFormEdit } from "@/components/form-edit-expense"
 
-export default function IndexPage({ params }: { params: { id: string } }) {
+interface Expense {
+  id: string
+  date: string
+  user_id: string
+  amount: number
+  description: string
+  location: string
+  account: string
+  categories: string
+  currency: string
+  merchant: string
+  receipt: string
+  author: string
+}
+
+interface Expense {
+  id: string
+  date: string
+  user_id: string
+  amount: number
+  description: string
+  location: string
+  account: string
+  categories: string
+  currency: string
+  merchant: string
+  receipt: string
+  author: string
+}
+
+export default function EditExpensePage({
+  params,
+}: {
+  params: { id: string }
+}) {
   const router = useRouter()
-  const pathname = usePathname()
+  const [expense, setExpense] = useState<Expense>({
+    id: "",
+    date: "",
+    user_id: "",
+    amount: 0,
+    description: "",
+    location: "",
+    account: "",
+    categories: "",
+    currency: "",
+    merchant: "",
+    receipt: "",
+    author: "",
+  })
+
+  useEffect(() => {
+    const findItemById = (id: string) =>
+      dataArray.find((item) => item.id === id)
+    const currentExpense = findItemById(params.id)
+    if (currentExpense) {
+      setExpense(currentExpense)
+    }
+  }, [])
 
   return (
     <section className="container grid items-center gap-6 pt-6 pb-8 md:py-10">
-      <div className="flex max-w-[980px] flex-col items-start gap-2">
+      <div className="flex max-w-[980px] flex-col  gap-2">
         <Link href={`/expense/${params.id}`}>
           <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
             Edit Expense.
           </h1>
         </Link>
         <div className="pt-4">
-          <ExpenseForm />
+          <ExpenseFormEdit settings={settings} expense={expense} />
         </div>
       </div>
     </section>

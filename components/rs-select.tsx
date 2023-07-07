@@ -147,6 +147,7 @@ const customStylesDef = (theme: any) => ({
   }),
 })
 
+////////////////////// SINGLE SELECT //////////////////////
 export function RSSelect({
   items,
   setSelectedItem,
@@ -166,8 +167,6 @@ export function RSSelect({
   const [isDisabled, setIsDisabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isRtl, setIsRtl] = useState(false)
-
-  //styles
 
   const [customStyles, setCustomStyles] =
     useState<CustomStyles>(initialCustomStyles)
@@ -242,6 +241,8 @@ export function RSSelect({
     </div>
   )
 }
+
+////////////////////// MULTI SELECT //////////////////////
 export function RSSelectMulti({
   items,
   setSelectedItems,

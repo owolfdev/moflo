@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { settings } from "@/data/settings"
 
-import { ExpenseForm } from "@/components/form-add-expense"
+import { ExpenseFormAdd } from "@/components/form-add-expense"
 
 export default function IndexPage() {
   return (
@@ -13,7 +13,7 @@ export default function IndexPage() {
           </h1>
         </Link>
         <div className="pt-4">
-          <ExpenseForm settings={settings} />
+          <ExpenseFormAdd settings={settings} />
         </div>
       </div>
     </section>

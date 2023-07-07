@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { settings } from "@/data/settings"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -93,10 +93,42 @@ const formSchema = z.object({
   receipt: fileSchema.optional(),
 })
 
-export function ExpenseFormAdd({ settings }: { settings: any }) {
+interface Expense {
+  id: string
+  date: string
+  user_id: string
+  amount: number
+  description: string
+  location: string
+  account: string
+  categories: string
+  currency: string
+  merchant: string
+  receipt: string
+  author: string
+}
+
+export function ExpenseFormEdit({
+  settings,
+  expense,
+}: {
+  settings: any
+  expense: Expense
+}) {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedMerchant, setSelectedMerchant] = useState("")
   const [selectedAccount, setSelectedAccount] = useState("")
+
+  const { toast } = useToast()
+
+  const [amount, setAmount] = useState("")
+  const [description, setDescription] = useState("")
+  const [merchant, setMerchant] = useState("")
+  const [location, setLocation] = useState("")
+  const [account, setAccount] = useState("")
+  const [categories, setCategories] = useState<string[]>([])
+  const [receipt, setReceipt] = useState<File | null>(null)
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -106,16 +138,30 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
       location: "",
       account: "",
       categories: [],
-      receipt: {
-        name: "",
-        type: "",
-        size: 0,
-      },
     },
   })
-  const { toast } = useToast()
 
   const { handleSubmit, control, setValue } = form
+
+  useEffect(() => {
+    // Set the form field values when the expense data changes
+    setValue("amount", (expense.amount / 100).toFixed(2))
+    setValue("description", expense.description)
+    setValue("merchant", expense.merchant)
+    setValue("location", expense.location)
+    setValue("account", expense.account)
+    setValue("categories", expense.categories.split(","))
+  }, [expense, setValue])
+
+  useEffect(() => {
+    // Set the default values
+    setAmount((expense.amount / 100).toFixed(2))
+    setDescription(expense.description)
+    setMerchant(expense.merchant)
+    setLocation(expense.location)
+    setAccount(expense.account)
+    setCategories(expense.categories.split(","))
+  }, [expense])
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -174,8 +220,12 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
                         type="number"
                         min="0"
                         step="0.01"
-                        placeholder="Add an amount"
+                        // placeholder={(expense.amount / 100).toFixed(2)}
                         className="input-no-zoom, sm:text-base text-lg"
+                        onChange={(e) => {
+                          // setAmount(e.target.value)
+                          field.onChange(e.target.value)
+                        }}
                       />
                     )}
                   />
@@ -196,9 +246,13 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
                 </FormLabel>
                 <FormControl>
                   <Textarea
+                    {...field}
                     className="input-no-zoom, sm:text-base text-lg"
                     placeholder="Add a description"
-                    {...field}
+                    onChange={(e) => {
+                      // setDescription(e.target.value)
+                      field.onChange(e.target.value)
+                    }}
                   />
                 </FormControl>
                 {/* <FormDescription>
@@ -222,10 +276,10 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
                     instanceId="fruit"
                     items={settings.merchants}
                     setSelectedItem={(item) => {
-                      setValue("merchant", item, { shouldValidate: true }) // Set the value using React Hook Form only
+                      setValue("merchant", item, { shouldValidate: true })
                     }}
                     controls={false}
-                    placeholder="Select a merchant"
+                    placeholder={expense.merchant}
                   />
                 </FormControl>
                 <FormMessage />
@@ -243,9 +297,14 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
                 </FormLabel>
                 <FormControl>
                   <Input
+                    {...field}
                     className="input-no-zoom, sm:text-base text-lg"
                     placeholder="Add a location"
-                    {...field}
+                    value={location}
+                    onChange={(e) => {
+                      setLocation(e.target.value)
+                      field.onChange(e.target.value)
+                    }}
                   />
                 </FormControl>
                 {/* <FormDescription>
@@ -270,12 +329,9 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
                     instanceId="categories"
                     items={settings.categories}
                     setSelectedItems={(items) => {
-                      setValue("categories", items as [string, ...string[]], {
-                        shouldValidate: true,
-                      })
+                      setValue("categories", items, { shouldValidate: true })
                     }}
                     selectedItems={field.value}
-                    placeholder="Select categories"
                   />
                 </FormControl>
                 <FormMessage />
@@ -297,7 +353,7 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
                       setValue("account", item, { shouldValidate: true }) // Set the value using React Hook Form only
                     }}
                     controls={false}
-                    placeholder="Select an account"
+                    placeholder={expense.account}
                   />
                 </FormControl>
                 <FormMessage />
