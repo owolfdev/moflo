@@ -1,5 +1,6 @@
 import {
   Banknote,
+  BarChart4,
   DollarSign,
   Info,
   LucideProps,
@@ -20,6 +21,7 @@ export const Icons = {
   settings: Settings,
   mLogo: Wallet,
   docs: Info,
+  chart: BarChart4,
   logo: (props: LucideProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
       <path

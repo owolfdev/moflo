@@ -25,6 +25,17 @@ export function SiteHeader() {
                 <span className="sr-only">Settings</span>
               </div>
             </Link>
+            <Link href={"/analytics"}>
+              <div
+                className={buttonVariants({
+                  size: "sm",
+                  variant: "ghost",
+                })}
+              >
+                <Icons.chart className="w-5 h-5" />
+                <span className="sr-only">Stats</span>
+              </div>
+            </Link>
             <Link href={"/docs"}>
               <div
                 className={buttonVariants({
@@ -36,7 +47,6 @@ export function SiteHeader() {
                 <span className="sr-only">Documentation</span>
               </div>
             </Link>
-            <ThemeToggle />
             <div className=" pl-2">
               <AuthAvatar />
             </div>
