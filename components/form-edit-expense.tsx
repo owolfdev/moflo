@@ -150,7 +150,10 @@ export function ExpenseFormEdit({
     setValue("merchant", expense.merchant)
     setValue("location", expense.location)
     setValue("account", expense.account)
-    setValue("categories", expense.categories.split(","))
+    setValue(
+      "categories",
+      expense.categories.split(",") as [string, ...string[]]
+    )
   }, [expense, setValue])
 
   useEffect(() => {
@@ -329,7 +332,9 @@ export function ExpenseFormEdit({
                     instanceId="categories"
                     items={settings.categories}
                     setSelectedItems={(items) => {
-                      setValue("categories", items, { shouldValidate: true })
+                      setValue("categories", items as [string, ...string[]], {
+                        shouldValidate: true,
+                      })
                     }}
                     selectedItems={field.value}
                   />
