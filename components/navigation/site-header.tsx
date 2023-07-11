@@ -10,11 +10,11 @@ import { AuthAvatar } from "@/components/navigation/auth-avatar"
 import { MainNav } from "@/components/navigation/main-nav"
 
 export async function SiteHeader() {
-  const supabase = createServerComponentClient({ cookies })
+  // const supabase = createServerComponentClient({ cookies })
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // const {
+  //   data: { user },
+  // } = await supabase.auth.getUser()
 
   // if (!user) {
   //   redirect("/about")
@@ -28,7 +28,6 @@ export async function SiteHeader() {
           <nav className="flex items-center space-x-1">
             <Link href={"/settings"}>
               <button
-                disabled={!user}
                 className={buttonVariants({
                   size: "sm",
                   variant: "ghost",
@@ -40,7 +39,6 @@ export async function SiteHeader() {
             </Link>
             <Link href={"/analytics"}>
               <button
-                disabled={!user}
                 className={buttonVariants({
                   size: "sm",
                   variant: "ghost",
