@@ -14,8 +14,9 @@ export default async function IndexPage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/login")
+    redirect("/about")
   }
+
   return (
     <section className="container grid items-center gap-6 pt-6 pb-8 md:py-10">
       <div className="flex max-w-[980px] flex-col  gap-2 ">
@@ -25,7 +26,6 @@ export default async function IndexPage() {
           </h1>
         </Link>
         <div className="pt-4">
-          <div>Welcome {user.email}</div>
           <ExpenseFormAdd settings={settings} />
         </div>
       </div>

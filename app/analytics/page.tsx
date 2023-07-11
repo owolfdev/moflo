@@ -1,4 +1,7 @@
 import * as React from "react"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 
 import {
   Card,
@@ -11,7 +14,17 @@ import {
 import { ReChartBar } from "@/components/rechart-bar-chart"
 import { ReChartPie } from "@/components/rechart-pie-chart"
 
-export default function StatsPage() {
+export default async function StatsPage() {
+  const supabase = createServerComponentClient({ cookies })
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect("/about")
+  }
+
   return (
     <section className="container grid items-center gap-6 pt-6 pb-8 md:py-10">
       <div className="flex max-w-[980px] flex-col items-start gap-2">
