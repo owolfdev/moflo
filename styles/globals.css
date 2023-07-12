@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+.input-no-zoom {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
