@@ -1,7 +1,10 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { cookies } from "next/headers"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 import { siteConfig } from "@/config/site"
 import { buttonVariants } from "@/components/ui/button"
@@ -9,12 +12,26 @@ import { Icons } from "@/components/icons"
 import { AuthAvatar } from "@/components/navigation/auth-avatar"
 import { MainNav } from "@/components/navigation/main-nav"
 
-export async function SiteHeader() {
-  // const supabase = createServerComponentClient({ cookies })
+interface User {
+  id: string
+  email?: string
+  // other properties of user...
+}
 
-  // const {
-  //   data: { user },
-  // } = await supabase.auth.getUser()
+export function SiteHeader() {
+  const [user, setUser] = useState<User | null>(null)
+  const supabase = createClientComponentClient()
+
+  useEffect(() => {
+    async function fetchUser() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      setUser(user)
+    }
+
+    fetchUser()
+  }, [])
 
   // if (!user) {
   //   redirect("/about")
@@ -28,6 +45,7 @@ export async function SiteHeader() {
           <nav className="flex items-center space-x-1">
             <Link href={"/settings"}>
               <button
+                disabled={!user}
                 className={buttonVariants({
                   size: "sm",
                   variant: "ghost",
@@ -39,6 +57,7 @@ export async function SiteHeader() {
             </Link>
             <Link href={"/analytics"}>
               <button
+                disabled={!user}
                 className={buttonVariants({
                   size: "sm",
                   variant: "ghost",
