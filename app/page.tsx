@@ -9,11 +9,14 @@ import { ExpenseFormAdd } from "@/components/form-add-expense"
 export default async function IndexPage() {
   const supabase = createServerComponentClient({ cookies })
 
+  console.log("hello from index page")
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
   if (!user) {
+    console.log("no user")
     redirect("/about")
   }
 

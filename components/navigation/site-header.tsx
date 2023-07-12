@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { cookies } from "next/headers"
 import Link from "next/link"
-import { redirect } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 import { siteConfig } from "@/config/site"
@@ -21,6 +21,7 @@ interface User {
 export function SiteHeader() {
   const [user, setUser] = useState<User | null>(null)
   const supabase = createClientComponentClient()
+  const router = useRouter()
 
   useEffect(() => {
     async function fetchUser() {
@@ -58,9 +59,11 @@ export function SiteHeader() {
     }
   }, [supabase.auth])
 
-  // if (!user) {
-  //   redirect("/about")
-  // }
+  // useEffect(() => {
+  //   if (!user) {
+  //     router.push("/about")
+  //   }
+  // }, [user])
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
