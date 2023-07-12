@@ -73,8 +73,8 @@ export function AuthAvatar() {
   }, [supabase.auth])
 
   return (
-    user?.email &&
-    profile?.avatar && (
+    <>
+      user?.email && profile?.avatar && (
       <Link href="/profile">
         <div className=" pl-2">
           <Avatar>
@@ -86,6 +86,7 @@ export function AuthAvatar() {
           </Avatar>
         </div>
       </Link>
-    )
+      )
+    </>
   )
 }
