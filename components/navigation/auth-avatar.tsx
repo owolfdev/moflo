@@ -74,19 +74,19 @@ export function AuthAvatar() {
 
   return (
     <>
-      user?.email && profile?.avatar && (
-      <Link href="/profile">
-        <div className=" pl-2">
-          <Avatar>
-            <AvatarImage
-              src={profile?.avatar}
-              alt={`${profile?.first_name} ${profile?.last_name}`}
-            />
-            <AvatarFallback>OW</AvatarFallback>
-          </Avatar>
-        </div>
-      </Link>
-      )
+      {user?.email && profile?.avatar && (
+        <Link href="/profile">
+          <div className=" pl-2">
+            <Avatar>
+              <AvatarImage
+                src={profile?.avatar}
+                alt={`${profile?.first_name} ${profile?.last_name}`}
+              />
+              <AvatarFallback>OW</AvatarFallback>
+            </Avatar>
+          </div>
+        </Link>
+      )}
     </>
   )
 }
