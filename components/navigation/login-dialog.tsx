@@ -126,7 +126,7 @@ export function LoginDialog() {
               </Label>
               <Input
                 id="email"
-                className="col-span-3"
+                className="col-span-3 input-no-zoom"
                 onChange={handleChangeInputValue}
               />
             </div>
@@ -136,7 +136,7 @@ export function LoginDialog() {
               </Label>
               <Input
                 id="password"
-                className="col-span-3"
+                className="col-span-3 input-no-zoom"
                 onChange={handleChangeInputValue}
               />
             </div>
