@@ -51,9 +51,9 @@ export function LoginDialog() {
         setUser(currentUser ? currentUser : null)
 
         if (session) {
-          const maxAge = 100 * 365 * 24 * 60 * 60 // 100 years, never expires
-          document.cookie = `my-access-token=${session.access_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
-          document.cookie = `my-refresh-token=${session.refresh_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
+          // const maxAge = 100 * 365 * 24 * 60 * 60 // 100 years, never expires
+          // document.cookie = `my-access-token=${session.access_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
+          // document.cookie = `my-refresh-token=${session.refresh_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
         }
 
         // Navigate to the home page after sign in or sign out
