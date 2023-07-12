@@ -1,13 +1,19 @@
+import { cookies } from "next/headers"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 
 import { Button } from "@/components/ui/button"
 
 import dataArray from "../../../data/data"
 import { Expense } from "../../expenses/columns"
 
-export default function PaymentPage({ params }: { params: { id: string } }) {
+export default async function PaymentPage({
+  params,
+}: {
+  params: { id: string }
+}) {
   const expenseData = dataArray
   const data = expenseData.find((item) => item.id === params.id)
   const formatDate = (date: string) => {
@@ -23,6 +29,20 @@ export default function PaymentPage({ params }: { params: { id: string } }) {
   const convertedAmount: number = data?.amount! / 100
   const formattedAmount: string = convertedAmount.toFixed(2)
   const receiptImage = data?.receipt as string
+
+  const supabase = createServerComponentClient({ cookies })
+
+  console.log("hello from index page")
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    console.log("no user")
+    redirect("/about")
+  }
+
   return (
     <section className="container grid items-center gap-6 pt-6 pb-8 md:py-10 ">
       <div className="flex items-end gap-2">
