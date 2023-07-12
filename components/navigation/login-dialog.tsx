@@ -44,30 +44,36 @@ export function LoginDialog() {
     checkUser()
   }, [user])
 
-  // useEffect(() => {
-  //   const { data: authListener } = supabase.auth.onAuthStateChange(
-  //     async (event, session) => {
-  //       const currentUser = session?.user
-  //       setUser(currentUser ? currentUser : null)
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        const currentUser = session?.user
+        setUser(currentUser ? currentUser : null)
 
-  //       // Navigate to the home page after sign in or sign out
-  //       if (event === "SIGNED_IN") {
-  //         console.log("signed in")
-  //         router.push("/")
-  //         router.refresh()
-  //       } else {
-  //         console.log("signed out")
+        if (session) {
+          const maxAge = 100 * 365 * 24 * 60 * 60 // 100 years, never expires
+          document.cookie = `my-access-token=${session.access_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
+          document.cookie = `my-refresh-token=${session.refresh_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
+        }
 
-  //         router.refresh()
-  //       }
-  //     }
-  //   )
+        // Navigate to the home page after sign in or sign out
+        if (event === "SIGNED_IN") {
+          console.log("signed in")
+          router.push("/")
+          router.refresh()
+        } else {
+          console.log("signed out")
 
-  //   // Unsubscribe when the component unmounts
-  //   return () => {
-  //     authListener.subscription.unsubscribe()
-  //   }
-  // }, [])
+          router.refresh()
+        }
+      }
+    )
+
+    // Unsubscribe when the component unmounts
+    return () => {
+      authListener.subscription.unsubscribe()
+    }
+  }, [])
 
   const handleChangeInputValue = (e: any) => {
     // if (e.target.id === "email") console.log("email:", e.target.value)
@@ -79,7 +85,7 @@ export function LoginDialog() {
   const handleSignOut = async () => {
     await supabase.auth.signOut()
     router.push("/about")
-    setUser(user)
+    setUser(null)
   }
 
   const handleSignIn = async () => {
