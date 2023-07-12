@@ -33,6 +33,31 @@ export function SiteHeader() {
     fetchUser()
   }, [])
 
+  useEffect(() => {
+    const checkUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      setUser(user)
+    }
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        const currentUser = session?.user
+        setUser(currentUser ? currentUser : null)
+      }
+    )
+
+    checkUser()
+
+    // Cleanup function for useEffect
+    return () => {
+      if (authListener && authListener.subscription) {
+        authListener.subscription.unsubscribe()
+      }
+    }
+  }, [supabase.auth])
+
   // if (!user) {
   //   redirect("/about")
   // }
