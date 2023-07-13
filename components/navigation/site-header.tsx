@@ -5,6 +5,7 @@ import { cookies } from "next/headers"
 import Link from "next/link"
 import { redirect, useRouter } from "next/navigation"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { set } from "date-fns"
 
 import { siteConfig } from "@/config/site"
 import { buttonVariants } from "@/components/ui/button"
@@ -28,6 +29,20 @@ export function SiteHeader() {
       const {
         data: { user },
       } = await supabase.auth.getUser()
+
+      if (
+        !user ||
+        !["oliverwolfson@gmail.com", "owolfdev@gmail.com"].includes(
+          user.email as string
+        )
+      ) {
+        // Redirect the user to the login page if they are not logged in or their email is not allowed
+        await supabase.auth.signOut()
+        router.push("/about")
+        setUser(null)
+        return null
+      }
+
       setUser(user)
     }
 

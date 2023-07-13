@@ -27,7 +27,7 @@ export function AuthAvatar() {
   const supabase = createClientComponentClient()
 
   useEffect(() => {
-    console.log("profile: ", profile)
+    // console.log("profile: ", profile)
   }, [profile])
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export function AuthAvatar() {
       } = await supabase.auth.getUser()
       setUser(user)
 
-      console.log("user: ", user)
+      // console.log("user: ", user)
 
       if (user) {
         const { data: profileData, error } = await supabase

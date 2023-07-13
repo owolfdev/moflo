@@ -5,6 +5,7 @@ import { redirect, useRouter } from "next/navigation"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { set } from "date-fns"
 import { Divide } from "lucide-react"
+import { FaGoogle } from "react-icons/fa"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -58,11 +59,11 @@ export function LoginDialog() {
 
         // Navigate to the home page after sign in or sign out
         if (event === "SIGNED_IN") {
-          console.log("signed in")
+          // console.log("signed in")
           router.push("/")
           router.refresh()
         } else {
-          console.log("signed out")
+          // console.log("signed out")
 
           router.refresh()
         }
@@ -98,15 +99,12 @@ export function LoginDialog() {
   }
 
   const handleSignInWithGoogle = async () => {
-    setUser({ id: "123" })
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    await supabase.auth.signInWithOAuth({
       provider: "google",
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+      },
     })
-    if (error) {
-      console.log("Error signing in with Google:", error.message)
-    } else {
-      console.log("Signed in with Google:", data)
-    }
   }
 
   if (user)
@@ -131,8 +129,8 @@ export function LoginDialog() {
               Log in to your account to continue
             </DialogDescription>
           </DialogHeader>
-          {/* <div className="flex justify-center mt-2">
-            <div className="w-1/2">
+          <div className="flex justify-center mt-2">
+            <div className="">
               <Button
                 onClick={handleSignInWithGoogle}
                 className={buttonVariants({
@@ -140,10 +138,15 @@ export function LoginDialog() {
                   size: "default",
                 })}
               >
-                Sign In with Google
+                <div className="flex justify-between items-center">
+                  <div className="bg-gray-500 rounded p-1 mr-2 text-lg">
+                    <FaGoogle />
+                  </div>
+                  <span className="font-semibold">Sign In with Google</span>
+                </div>
               </Button>
             </div>
-          </div> */}
+          </div>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="email" className="text-right">
