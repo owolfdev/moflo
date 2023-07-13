@@ -18,15 +18,14 @@ interface User {
 function ExpensesContainer() {
   const supabase = createClientComponentClient()
   const isMobile = useMediaQuery({ maxWidth: 740 })
-  const [data, setData] = React.useState<Expense[]>([])
+  // const [data, setData] = React.useState<Expense[]>([])
+  const [sbData, setSbData] = useState<Expense[]>([])
   const [user, setUser] = useState<User | null>(null)
 
-  async function getData(): Promise<Expense[]> {
-    // Fetch data from your API here.
-    // console.log("data array", dataArray)
-    const fetchedData = dataArray
+  async function getData(data: any): Promise<Expense[]> {
+    const fetchedData = data
     const sortedData = fetchedData.sort((a: Expense, b: Expense) => {
-      return new Date(b.date).getTime() - new Date(a.date).getTime()
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     })
     return [...(sortedData as Expense[])]
   }
@@ -56,35 +55,41 @@ function ExpensesContainer() {
     }
   }, [supabase.auth])
 
+  useEffect(() => {}, [])
+
   useEffect(() => {
-    getData().then((data) => {
-      setData(data)
-    })
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from("expenses_for_app")
+        .select("*")
+      if (error) {
+        console.error("Error fetching data:", error)
+      } else {
+        getData(data).then((data) => {
+          setSbData(data)
+        })
+      }
+    }
+
+    fetchData()
   }, [])
 
   useEffect(() => {
-    // console.log("data:", data)
-  }, [data])
+    console.log("supabase data", sbData)
+  }, [sbData])
 
   return (
-    <section className="container grid items-center gap-6 pt-6 pb-8 md:py-10 ">
-      <div className="flex max-w-[980px] flex-col items-start gap-2">
-        <Link href="/">
-          <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-            Expenses
-          </h1>
-        </Link>
-      </div>
+    <>
       <div className="">
         <div className="max-w-[980px]">
           {isMobile ? (
-            <DataTable columns={columnsMobile} data={data} />
+            <DataTable columns={columnsMobile} data={sbData} />
           ) : (
-            <DataTable columns={columns} data={data} />
+            <DataTable columns={columns} data={sbData} />
           )}
         </div>
       </div>
-    </section>
+    </>
   )
 }
 

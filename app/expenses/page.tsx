@@ -27,7 +27,7 @@ export default async function IndexPage() {
       <div className="flex max-w-[980px] flex-col  gap-2 ">
         <Link href={`/`}>
           <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-            Add an expense.
+            Expenses
           </h1>
         </Link>
         <div className="pt-4">

@@ -97,6 +97,18 @@ export function LoginDialog() {
     router.push("/")
   }
 
+  const handleSignInWithGoogle = async () => {
+    setUser({ id: "123" })
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    })
+    if (error) {
+      console.log("Error signing in with Google:", error.message)
+    } else {
+      console.log("Signed in with Google:", data)
+    }
+  }
+
   if (user)
     return (
       <div className="text-sm font-semibold hover:text-slate-800 cursor-pointer hover:bg-slate-100 sm:py-2 sm:px-3 rounded-md">
@@ -119,6 +131,19 @@ export function LoginDialog() {
               Log in to your account to continue
             </DialogDescription>
           </DialogHeader>
+          {/* <div className="flex justify-center mt-2">
+            <div className="w-1/2">
+              <Button
+                onClick={handleSignInWithGoogle}
+                className={buttonVariants({
+                  variant: "default",
+                  size: "default",
+                })}
+              >
+                Sign In with Google
+              </Button>
+            </div>
+          </div> */}
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="email" className="text-right">

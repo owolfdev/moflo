@@ -23,7 +23,7 @@ export type Payment = {
 
 export type Expense = {
   id: string
-  date: string
+  created_at: string
   user_id: string | null
   amount: number
   description: string
@@ -46,13 +46,16 @@ export const columns: ColumnDef<Expense>[] = [
       const amount: number = row.getValue("amount")
       const convertedAmount: number = amount / 100
       const formattedAmount: string = convertedAmount.toFixed(2)
-      const date = row.getValue("date") as string
+      const created_at = row.getValue("created_at") as string
       const description = row.getValue("description") as string
       const merchant = row.getValue("merchant") as string
       const categories = row.getValue("categories") as string[]
 
       // console.log("exid", exid)
       const account = row.getValue("account") as string
+
+      const date = new Date(created_at)
+      const formattedDate = date.toISOString().split("T")[0]
 
       return (
         <div className="flex justify-between w-full gap-6 sm:gap-20 h-[90px] overflow-hidden">
@@ -63,7 +66,9 @@ export const columns: ColumnDef<Expense>[] = [
               {/* <span className="text-lg ">&#3647;</span> */}
               <span className="text-lg font-bold">{formattedAmount}</span>
             </div>
-            <div className="text-sm font-medium ">Date: {date}</div>
+            {/* <div className="text-sm font-medium ">Date: {date}</div> */}
+            <div className="text-sm font-medium ">Date: {formattedDate}</div>
+
             <div className="font-bold">Merchant: {merchant}</div>
 
             <div className="text-sm font-medium text-gray-600">
@@ -81,7 +86,7 @@ export const columns: ColumnDef<Expense>[] = [
     },
   },
   {
-    accessorKey: "date",
+    accessorKey: "created_at",
     cell: () => null,
     header: () => null,
   },
@@ -123,13 +128,16 @@ export const columnsMobile: ColumnDef<Expense>[] = [
       const amount: number = row.getValue("amount")
       const convertedAmount: number = amount / 100
       const formattedAmount: string = convertedAmount.toFixed(2)
-      const date = row.getValue("date") as string
+      const created_at = row.getValue("created_at") as string
       const description = row.getValue("description") as string
       const merchant = row.getValue("merchant") as string
       const categories = row.getValue("categories") as string[]
 
       // console.log("exid", exid)
       const account = row.getValue("account") as string
+
+      const date = new Date(created_at)
+      const formattedDate = date.toISOString().split("T")[0]
 
       return (
         <div className="flex justify-between w-full gap-6 sm:gap-20 h-[90px]overflow-hidden ">
@@ -139,7 +147,7 @@ export const columnsMobile: ColumnDef<Expense>[] = [
               {/* <span className="text-lg ">&#3647;</span> */}
               <span className="text-lg font-bold">{formattedAmount}</span>
             </div>
-            <div className="text-sm font-medium">{date}</div>
+            <div className="text-sm font-medium">{formattedDate}</div>
             <div className="font-bold">{merchant}</div>
             {/* <div className="text-xs text-gray-500">{categories}</div> */}
             <div className="text-sm font-medium text-gray-600">{account}</div>
@@ -155,7 +163,7 @@ export const columnsMobile: ColumnDef<Expense>[] = [
     },
   },
   {
-    accessorKey: "date",
+    accessorKey: "created_at",
     cell: () => null,
     header: () => null,
   },
