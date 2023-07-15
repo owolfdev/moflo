@@ -1,10 +1,20 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { settings } from "@/data/settings"
+import { formatCurrencyForDatabase } from "@/utils/formatCurrency"
+import {
+  addExpense,
+  addNewAccount,
+  addNewCategory,
+  addNewMerchant,
+  getSettingsArray,
+  uploadImageToStorage,
+} from "@/utils/supabase"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { addDays, format } from "date-fns"
+import { addDays, format, set } from "date-fns"
 import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
@@ -94,9 +104,13 @@ const formSchema = z.object({
 })
 
 export function ExpenseFormAdd({ settings }: { settings: any }) {
+  const [categories, setCategories] = useState<string[]>([])
+  const [merchants, setMerchants] = useState<string[]>([])
+  const [accounts, setAccounts] = useState<string[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedMerchant, setSelectedMerchant] = useState("")
   const [selectedAccount, setSelectedAccount] = useState("")
+  const [receipt, setReceipt] = useState<File | null>(null)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -114,18 +128,88 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
     },
   })
   const { toast } = useToast()
+  const router = useRouter()
+
+  useEffect(() => {
+    const fetchCategoriesData = async () => {
+      try {
+        const data = await getSettingsArray("categories")
+        const settingArray = data.setting_array
+        // console.log("categories array:", settingArray);
+        setCategories([...settingArray])
+      } catch (error) {
+        // Handle error
+        console.error(error)
+      }
+    }
+    fetchCategoriesData()
+    // //
+    const fetchMerchantsData = async () => {
+      try {
+        const data = await getSettingsArray("merchants")
+        const settingArray = data.setting_array
+        // console.log("merchants array:", settingArray);
+        setMerchants([...settingArray])
+      } catch (error) {
+        // Handle error
+        console.error(error)
+      }
+    }
+    fetchMerchantsData()
+    // //
+    const fetchAccountsData = async () => {
+      try {
+        const data = await getSettingsArray("accounts")
+        const settingArray = data.setting_array
+        // console.log("accounts array:", settingArray);
+        setAccounts([...settingArray])
+      } catch (error) {
+        // Handle error
+        console.error(error)
+      }
+    }
+    fetchAccountsData()
+  }, [])
 
   const { handleSubmit, control, setValue } = form
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("submitted values", values)
+  async function handleAddExpense(values: z.infer<typeof formSchema>) {
+    //
+
+    //get the receipt url
+    let receiptUrl = null
+    if (receipt) {
+      console.log("values.receipt:", values.receipt)
+      receiptUrl = await uploadImageToStorage(receipt)
+      console.log("receiptUrl:", receiptUrl)
+    }
+
+    //toast
     toast({
       title: "Your expense has been recorded.",
       description: `Expense Amount: $${values.amount}`,
       duration: 2000,
       action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
     })
+    //
+    console.log("values", values.categories.join(","))
+
+    const expenseData = {
+      amount: formatCurrencyForDatabase(values.amount),
+      description: values.description,
+      merchant: values.merchant,
+      location: values.location,
+      categories: values.categories.join(","),
+      account: values.account,
+      receipt: receiptUrl,
+    }
+
+    await addExpense(expenseData)
+
+    router.push("/expenses")
+
+    //
   }
 
   function handleInputTap(event: any) {
@@ -136,27 +220,18 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
     if (file) {
       // Update the receipt field
       console.log("heres the file:", file)
-      setValue("receipt", {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-      })
+      setValue("receipt", file, { shouldValidate: true })
+      setReceipt(file)
     }
-  }
-
-  const handleClick = () => {
-    console.log("toast test clicked")
-    toast({
-      title: "Hello, World!",
-      description: "This is a toast message.",
-      duration: 2000,
-    })
   }
 
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
+        <form
+          onSubmit={form.handleSubmit(handleAddExpense)}
+          className="space-y-4 "
+        >
           {/* amount */}
           <FormField
             control={form.control}
@@ -220,7 +295,7 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
                 <FormControl>
                   <RSSelect
                     instanceId="fruit"
-                    items={settings.merchants}
+                    items={merchants}
                     setSelectedItem={(item) => {
                       setValue("merchant", item, { shouldValidate: true }) // Set the value using React Hook Form only
                     }}
@@ -268,7 +343,7 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
                 <FormControl>
                   <RSSelectMulti
                     instanceId="categories"
-                    items={settings.categories}
+                    items={categories}
                     setSelectedItems={(items) => {
                       setValue("categories", items as [string, ...string[]], {
                         shouldValidate: true,
@@ -292,7 +367,7 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
                 <FormControl>
                   <RSSelect
                     instanceId="account"
-                    items={settings.accounts}
+                    items={accounts}
                     setSelectedItem={(item) => {
                       setValue("account", item, { shouldValidate: true }) // Set the value using React Hook Form only
                     }}

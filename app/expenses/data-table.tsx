@@ -47,7 +47,7 @@ import {
 import { RSSelect, RSSelectMulti } from "@/components/rs-select"
 
 let itemsSelectFilter = ["merchant", "description", "categories", "account"]
-let itemsSelectSort = ["created_at", "amount", "account"]
+let itemsSelectSort = ["date", "amount", "account"]
 
 interface TData {
   exid: string
@@ -72,7 +72,7 @@ export function DataTable<TData, TValue>({
     []
   )
   const [filteringTerm, setFilteringTerm] = React.useState<string>("merchant")
-  const [sortingTerm, setSortingTerm] = React.useState<string>("created_at")
+  const [sortingTerm, setSortingTerm] = React.useState<string>("date")
 
   const router = useRouter()
 

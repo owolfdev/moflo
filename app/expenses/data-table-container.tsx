@@ -25,7 +25,7 @@ function ExpensesContainer() {
   async function getData(data: any): Promise<Expense[]> {
     const fetchedData = data
     const sortedData = fetchedData.sort((a: Expense, b: Expense) => {
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      return new Date(b.date).getTime() - new Date(a.date).getTime()
     })
     return [...(sortedData as Expense[])]
   }
@@ -59,9 +59,7 @@ function ExpensesContainer() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await supabase
-        .from("expenses_for_app")
-        .select("*")
+      const { data, error } = await supabase.from("expenses").select("*")
       if (error) {
         console.error("Error fetching data:", error)
       } else {

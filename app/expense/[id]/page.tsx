@@ -41,7 +41,7 @@ export default async function PaymentPage({
   }
 
   const { data }: any = await supabase
-    .from("expenses_for_app")
+    .from("expenses")
     .select("*")
     .eq("id", params.id)
 

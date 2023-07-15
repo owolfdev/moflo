@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import dataArray from "@/data/data"
 import { settings } from "@/data/settings"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 import { ExpenseFormEdit } from "@/components/form-edit-expense"
 
@@ -58,14 +59,19 @@ export default function EditExpensePage({
     receipt: "",
     author: "",
   })
+  const supabase = createClientComponentClient()
 
   useEffect(() => {
-    const findItemById = (id: string) =>
-      dataArray.find((item) => item.id === id)
-    const currentExpense = findItemById(params.id)
-    if (currentExpense) {
-      setExpense(currentExpense)
+    const fetchExpense = async () => {
+      const { data }: any = await supabase
+        .from("expenses")
+        .select("*")
+        .eq("id", params.id)
+        .single()
+
+      setExpense(data)
     }
+    fetchExpense()
   }, [])
 
   return (

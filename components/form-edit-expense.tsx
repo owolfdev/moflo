@@ -3,6 +3,14 @@
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { settings } from "@/data/settings"
+import {
+  addExpense,
+  addNewAccount,
+  addNewCategory,
+  addNewMerchant,
+  getSettingsArray,
+  uploadImageToStorage,
+} from "@/utils/supabase"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { addDays, format } from "date-fns"
 import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react"

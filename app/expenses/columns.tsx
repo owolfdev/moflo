@@ -23,7 +23,7 @@ export type Payment = {
 
 export type Expense = {
   id: string
-  created_at: string
+  date: string
   user_id: string | null
   amount: number
   description: string
@@ -46,7 +46,7 @@ export const columns: ColumnDef<Expense>[] = [
       const amount: number = row.getValue("amount")
       const convertedAmount: number = amount / 100
       const formattedAmount: string = convertedAmount.toFixed(2)
-      const created_at = row.getValue("created_at") as string
+      const date = row.getValue("date") as string
       const description = row.getValue("description") as string
       const merchant = row.getValue("merchant") as string
       const categories = row.getValue("categories") as string[]
@@ -54,8 +54,8 @@ export const columns: ColumnDef<Expense>[] = [
       // console.log("exid", exid)
       const account = row.getValue("account") as string
 
-      const date = new Date(created_at)
-      const formattedDate = date.toISOString().split("T")[0]
+      const newDate = new Date(date)
+      const formattedDate = newDate.toISOString().split("T")[0]
 
       return (
         <div className="flex justify-between w-full gap-6 sm:gap-20 h-[90px] overflow-hidden">
@@ -86,7 +86,7 @@ export const columns: ColumnDef<Expense>[] = [
     },
   },
   {
-    accessorKey: "created_at",
+    accessorKey: "date",
     cell: () => null,
     header: () => null,
   },
@@ -128,7 +128,7 @@ export const columnsMobile: ColumnDef<Expense>[] = [
       const amount: number = row.getValue("amount")
       const convertedAmount: number = amount / 100
       const formattedAmount: string = convertedAmount.toFixed(2)
-      const created_at = row.getValue("created_at") as string
+      const date = row.getValue("date") as string
       const description = row.getValue("description") as string
       const merchant = row.getValue("merchant") as string
       const categories = row.getValue("categories") as string[]
@@ -136,8 +136,8 @@ export const columnsMobile: ColumnDef<Expense>[] = [
       // console.log("exid", exid)
       const account = row.getValue("account") as string
 
-      const date = new Date(created_at)
-      const formattedDate = date.toISOString().split("T")[0]
+      const newDate = new Date(date)
+      const formattedDate = newDate.toISOString().split("T")[0]
 
       return (
         <div className="flex justify-between w-full gap-6 sm:gap-20 h-[90px]overflow-hidden ">
@@ -163,7 +163,7 @@ export const columnsMobile: ColumnDef<Expense>[] = [
     },
   },
   {
-    accessorKey: "created_at",
+    accessorKey: "date",
     cell: () => null,
     header: () => null,
   },

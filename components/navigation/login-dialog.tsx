@@ -43,7 +43,7 @@ export function LoginDialog() {
       setUser(user)
     }
     checkUser()
-  }, [user])
+  }, [])
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
@@ -103,6 +103,11 @@ export function LoginDialog() {
       provider: "google",
       options: {
         redirectTo: `${location.origin}/auth/callback`,
+
+        // scopes: "https://www.googleapis.com/auth/userinfo.email",
+
+        // // This is the default behavior, but is included here for completeness
+        // // as an example of a case where you want to include redirectUrl
       },
     })
   }
