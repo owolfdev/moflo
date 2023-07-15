@@ -11,6 +11,7 @@ import { siteConfig } from "@/config/site"
 import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import { AuthAvatar } from "@/components/navigation/auth-avatar"
+import { LoginDialog } from "@/components/navigation/login-dialog"
 import { MainNav } from "@/components/navigation/main-nav"
 
 interface User {
@@ -86,6 +87,7 @@ export function SiteHeader() {
         <MainNav items={siteConfig.mainNav} />
         <div className="flex items-center justify-end flex-1 space-x-4">
           <nav className="flex items-center space-x-1">
+            {!user && <LoginDialog />}
             <Link href={"/settings"}>
               <button
                 disabled={!user}

@@ -9,7 +9,7 @@ import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 
-import { LoginDialog } from "./login-dialog"
+// import { LoginDialog } from "./login-dialog"
 
 interface MainNavProps {
   items?: NavItem[]
@@ -23,21 +23,17 @@ export function MainNav({ items }: MainNavProps) {
       {currentRoute !== "/" ? (
         <Link href="/" className="flex items-center space-x-2">
           <Icons.mLogo className="w-6 h-6" />
-          <span className="hidden sm:inline-block font-bold ">
-            {siteConfig.name}
-          </span>
+          <span className=" sm:inline-block font-bold ">{siteConfig.name}</span>
         </Link>
       ) : (
         <Link href="/expenses" className="flex items-center space-x-2">
           <Icons.mLogo className="w-6 h-6" />
-          <span className="hidden sm:inline-block font-bold ">
-            {siteConfig.name}
-          </span>
+          <span className=" sm:inline-block font-bold ">{siteConfig.name}</span>
         </Link>
       )}
 
       {/*  */}
-      <LoginDialog />
+      {/* <LoginDialog /> */}
       {/*  */}
 
       {items?.length ? (
