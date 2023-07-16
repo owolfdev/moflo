@@ -138,7 +138,7 @@ export const uploadImageToStorage = async (file) => {
 
 export const getSettingsArray = async (title) => {
   const { data, error } = await supabase
-    .from("expenses_settings_for_app")
+    .from("expenses_settings")
     .select("setting_array")
     .eq("title", title)
     .single()
@@ -152,7 +152,7 @@ export const getSettingsArray = async (title) => {
 
 export const addNewMerchant = async (newMerchantsArray) => {
   const { data, error } = await supabase
-    .from("expenses_settings_for_app")
+    .from("expenses_settings")
     .update({
       setting_array: [...newMerchantsArray],
     })
@@ -167,7 +167,7 @@ export const addNewMerchant = async (newMerchantsArray) => {
 
 export const addNewCategory = async (newCategoriesArray) => {
   const { data, error } = await supabase
-    .from("expenses_settings_for_app")
+    .from("expenses_settings")
     .update({
       setting_array: [...newCategoriesArray],
     })
@@ -182,7 +182,7 @@ export const addNewCategory = async (newCategoriesArray) => {
 
 export const addNewAccount = async (newAccountsArray) => {
   const { data, error } = await supabase
-    .from("expenses_settings_for_app")
+    .from("expenses_settings")
     .update({
       setting_array: [...newAccountsArray],
     })
@@ -193,4 +193,20 @@ export const addNewAccount = async (newAccountsArray) => {
   }
 
   return data
+}
+
+export async function fetchTablePolicies(tableName) {
+  try {
+    const { data, error } = await supabase
+      .from("pg_table_policies")
+      .select()
+      .eq("table_name", tableName)
+    if (error) {
+      throw error
+    }
+    return data
+  } catch (error) {
+    console.error("Error fetching table policies:", error.message)
+    return null
+  }
 }
