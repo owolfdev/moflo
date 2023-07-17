@@ -121,7 +121,7 @@ export default async function PaymentPage({
           <div className="w-full mb-1 mt-4 border rounded-lg overflow-hidden">
             {/* <img src={expense?.receipt as string} alt="" /> */}
             <Image
-              src={`/wrestler.jpeg`}
+              src={expense?.receipt as string}
               alt="receipt"
               width={500}
               height={500}
