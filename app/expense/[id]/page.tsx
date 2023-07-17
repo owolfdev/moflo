@@ -125,6 +125,7 @@ export default async function PaymentPage({
               alt="receipt"
               width={500}
               height={500}
+              priority
             />
           </div>
         </div>
