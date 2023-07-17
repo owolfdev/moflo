@@ -49,6 +49,10 @@ export default async function PaymentPage({
 
   const convertedAmount: number = expense?.amount! / 100
   const formattedAmount: string = convertedAmount.toFixed(2)
+  const formattedAmountWithCommas = formattedAmount.replace(
+    /\B(?=(\d{3})+(?!\d))/g,
+    ","
+  )
   const receiptImage = expense?.receipt as string
 
   return (
@@ -67,7 +71,7 @@ export default async function PaymentPage({
             <div>{formatDate(expense?.created_at!)}</div>
             <div className="text-lg mb-2">
               <span className="text-lg ">&#36;</span>
-              <span className="font-bold">{formattedAmount}</span>
+              <span className="font-bold">{formattedAmountWithCommas}</span>
             </div>
           </div>
           <div className="">
@@ -115,13 +119,13 @@ export default async function PaymentPage({
             <span className="font-bold">Account</span> {expense?.account}
           </div>
           <div className="w-full mb-1 mt-4 border rounded-lg overflow-hidden">
-            <img src={expense?.receipt as string} alt="" />
-            {/* <Image
+            {/* <img src={expense?.receipt as string} alt="" /> */}
+            <Image
               src={`/wrestler.jpeg`}
               alt="receipt"
               width={500}
               height={500}
-            /> */}
+            />
           </div>
         </div>
       </div>

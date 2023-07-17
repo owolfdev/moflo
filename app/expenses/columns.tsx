@@ -46,6 +46,10 @@ export const columns: ColumnDef<Expense>[] = [
       const amount: number = row.getValue("amount")
       const convertedAmount: number = amount / 100
       const formattedAmount: string = convertedAmount.toFixed(2)
+      const formattedAmountWithCommas = formattedAmount.replace(
+        /\B(?=(\d{3})+(?!\d))/g,
+        ","
+      )
       const date = row.getValue("date") as string
       const description = row.getValue("description") as string
       const merchant = row.getValue("merchant") as string
@@ -64,7 +68,9 @@ export const columns: ColumnDef<Expense>[] = [
               <span className="font-semibold">Amount: </span>
               <span className="text-lg ">&#36;</span>
               {/* <span className="text-lg ">&#3647;</span> */}
-              <span className="text-lg font-bold">{formattedAmount}</span>
+              <span className="text-lg font-bold">
+                {formattedAmountWithCommas}
+              </span>
             </div>
             {/* <div className="text-sm font-medium ">Date: {date}</div> */}
             <div className="text-sm font-medium ">Date: {formattedDate}</div>
@@ -128,6 +134,10 @@ export const columnsMobile: ColumnDef<Expense>[] = [
       const amount: number = row.getValue("amount")
       const convertedAmount: number = amount / 100
       const formattedAmount: string = convertedAmount.toFixed(2)
+      const formattedAmountWithCommas = formattedAmount.replace(
+        /\B(?=(\d{3})+(?!\d))/g,
+        ","
+      )
       const date = row.getValue("date") as string
       const description = row.getValue("description") as string
       const merchant = row.getValue("merchant") as string
@@ -145,7 +155,9 @@ export const columnsMobile: ColumnDef<Expense>[] = [
             <div className="">
               <span className="text-lg ">&#36;</span>
               {/* <span className="text-lg ">&#3647;</span> */}
-              <span className="text-lg font-bold">{formattedAmount}</span>
+              <span className="text-lg font-bold">
+                {formattedAmountWithCommas}
+              </span>
             </div>
             <div className="text-sm font-medium">{formattedDate}</div>
             <div className="font-bold">{merchant}</div>
