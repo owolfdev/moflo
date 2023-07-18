@@ -12,14 +12,10 @@ const supabase = createClientComponentClient()
 const PAGE_SIZE = 10
 
 export const fetchExpenses = async () => {
-  // console.log("page", page);
   const { data, error } = await supabase.from("expenses").select("*")
-  // .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
-
   if (error) {
     throw error
   }
-
   return data
 }
 
@@ -31,6 +27,23 @@ export const fetchExpensesSSP = async (page, pageSize) => {
     .from("expenses")
     .select("*")
     .range(start, end)
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
+//fetch the expenses for the previous 12 months
+export const fetchExpensesForTheLast12Months = async () => {
+  const oneYearAgo = new Date()
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+
+  const { data, error } = await supabase
+    .from("expenses")
+    .select("amount, date")
+    .gte("date", oneYearAgo.toISOString())
 
   if (error) {
     throw error

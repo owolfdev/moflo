@@ -34,7 +34,7 @@ export default async function StatsPage() {
         <div className="flex flex-col w-full gap-8 h-[500px] mt-8">
           <Card>
             <CardHeader>
-              <CardTitle>Card Title</CardTitle>
+              <CardTitle>12 Month Overview</CardTitle>
               {/* <CardDescription>Card Description</CardDescription> */}
             </CardHeader>
             <CardContent>
