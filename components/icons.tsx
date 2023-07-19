@@ -5,6 +5,7 @@ import {
   Info,
   LucideProps,
   Moon,
+  Plus,
   Settings,
   SunMedium,
   Twitter,
@@ -14,6 +15,8 @@ import {
 
 export type Icon = LucideIcon
 
+;<Plus />
+
 export const Icons = {
   sun: SunMedium,
   moon: Moon,
@@ -22,6 +25,7 @@ export const Icons = {
   mLogo: Wallet,
   docs: Info,
   chart: BarChart4,
+  add: Plus,
   logo: (props: LucideProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
       <path

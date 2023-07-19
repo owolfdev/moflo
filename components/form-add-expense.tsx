@@ -111,6 +111,7 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
   const [selectedMerchant, setSelectedMerchant] = useState("")
   const [selectedAccount, setSelectedAccount] = useState("")
   const [receipt, setReceipt] = useState<File | null>(null)
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -187,11 +188,15 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
 
     //toast
     toast({
-      title: "Your expense has been recorded.",
+      title: `Your expense from ${values.merchant} has been recorded.`,
       description: `Expense Amount: $${values.amount}`,
       duration: 2000,
-      action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
+      action: (
+        <ToastAction altText="Your expense has been recorded.">OK</ToastAction>
+      ),
     })
+    //
+
     //
     console.log("values", values.categories.join(","))
 
@@ -206,7 +211,6 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
     }
 
     await addExpense(expenseData)
-
     router.push("/expenses")
 
     //
@@ -392,8 +396,16 @@ export function ExpenseFormAdd({ settings }: { settings: any }) {
               </FormItem>
             )}
           />
-
-          <Button type="submit">Submit</Button>
+          <div className="flex gap-2">
+            <Button type="submit">Save Expense</Button>
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={() => router.push("/expenses")}
+            >
+              Cancel
+            </Button>
+          </div>
         </form>
       </Form>
     </>

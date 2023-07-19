@@ -2,13 +2,17 @@
 
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { settings } from "@/data/settings"
+import { formatCurrencyForDatabase } from "@/utils/formatCurrency"
 import {
   addExpense,
   addNewAccount,
   addNewCategory,
   addNewMerchant,
+  deleteExpenses,
   getSettingsArray,
+  updateExpense,
   uploadImageToStorage,
 } from "@/utils/supabase"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -57,20 +61,21 @@ import { ToastAction } from "@/components/ui/toast"
 import { toast, useToast } from "@/components/ui/use-toast"
 import FileUpload from "@/components/custom-file-picker"
 import { ToastDemo } from "@/components/custom-toast"
+import { DeleteItemDialog } from "@/components/delete-item-dialog"
 import { RSSelect, RSSelectMulti } from "@/components/rs-select"
 import { MultiSelect } from "@/components/scn-multi-select"
 
-const languages = [
-  { label: "English", value: "en" },
-  { label: "French", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Spanish", value: "es" },
-  { label: "Portuguese", value: "pt" },
-  { label: "Russian", value: "ru" },
-  { label: "Japanese", value: "ja" },
-  { label: "Korean", value: "ko" },
-  { label: "Chinese", value: "zh" },
-] as const
+// const languages = [
+//   { label: "English", value: "en" },
+//   { label: "French", value: "fr" },
+//   { label: "German", value: "de" },
+//   { label: "Spanish", value: "es" },
+//   { label: "Portuguese", value: "pt" },
+//   { label: "Russian", value: "ru" },
+//   { label: "Japanese", value: "ja" },
+//   { label: "Korean", value: "ko" },
+//   { label: "Chinese", value: "zh" },
+// ] as const
 
 const merchants = settings.merchants.map((merchant) => ({
   label: merchant,
@@ -99,6 +104,7 @@ const formSchema = z.object({
   account: z.string().min(2).max(50),
   categories: z.array(z.string()).nonempty(),
   receipt: fileSchema.optional(),
+  id: z.string().optional(),
 })
 
 interface Expense {
@@ -123,9 +129,12 @@ export function ExpenseFormEdit({
   settings: any
   expense: Expense
 }) {
+  const [merchants, setMerchants] = useState<string[]>([])
+  const [accounts, setAccounts] = useState<string[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedMerchant, setSelectedMerchant] = useState("")
   const [selectedAccount, setSelectedAccount] = useState("")
+  const router = useRouter()
 
   const { toast } = useToast()
 
@@ -146,6 +155,12 @@ export function ExpenseFormEdit({
       location: "",
       account: "",
       categories: [],
+      receipt: {
+        name: "",
+        type: "",
+        size: 0,
+      },
+      id: "",
     },
   })
 
@@ -162,6 +177,8 @@ export function ExpenseFormEdit({
       "categories",
       expense.categories.split(",") as [string, ...string[]]
     )
+    // setValue("receipt", expense.receipt);
+    setValue("id", expense.id)
   }, [expense, setValue])
 
   useEffect(() => {
@@ -174,15 +191,84 @@ export function ExpenseFormEdit({
     setCategories(expense.categories.split(","))
   }, [expense])
 
+  useEffect(() => {
+    const fetchCategoriesData = async () => {
+      try {
+        const data = await getSettingsArray("categories")
+        const settingArray = data.setting_array
+        // console.log("categories array:", settingArray);
+        setCategories([...settingArray])
+      } catch (error) {
+        // Handle error
+        console.error(error)
+      }
+    }
+    fetchCategoriesData()
+    // //
+    const fetchMerchantsData = async () => {
+      try {
+        const data = await getSettingsArray("merchants")
+        const settingArray = data.setting_array
+        // console.log("merchants array:", settingArray);
+        setMerchants([...settingArray])
+      } catch (error) {
+        // Handle error
+        console.error(error)
+      }
+    }
+    fetchMerchantsData()
+    // //
+    const fetchAccountsData = async () => {
+      try {
+        const data = await getSettingsArray("accounts")
+        const settingArray = data.setting_array
+        // console.log("accounts array:", settingArray);
+        setAccounts([...settingArray])
+      } catch (error) {
+        // Handle error
+        console.error(error)
+      }
+    }
+    fetchAccountsData()
+  }, [])
+
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("submitted values", values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    // const receiptToUse = values.receipt ? values.receipt : expense.receipt
+
+    let receiptUrl = null
+    if (receipt) {
+      console.log("values.receipt:", values.receipt)
+      receiptUrl = await uploadImageToStorage(receipt)
+      console.log("receiptUrl:", receiptUrl)
+    } else {
+      receiptUrl = expense.receipt
+    }
+
     toast({
-      title: "Your expense has been recorded.",
-      description: `Expense Amount: $${values.amount}`,
+      title: "Your expense has been edited.",
+      description: ``,
       duration: 2000,
-      action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
+      action: (
+        <ToastAction altText="Your expense has been edited">OK</ToastAction>
+      ),
     })
+
+    const expenseData = {
+      amount: formatCurrencyForDatabase(values.amount),
+      description: values.description,
+      merchant: values.merchant,
+      location: values.location,
+      categories: values.categories.join(","),
+      account: values.account,
+      receipt: receiptUrl,
+      id: values.id,
+    }
+
+    console.log("expenseData:", expenseData)
+
+    await updateExpense(expenseData.id, expenseData)
+    router.push("/expenses")
   }
 
   function handleInputTap(event: any) {
@@ -193,11 +279,8 @@ export function ExpenseFormEdit({
     if (file) {
       // Update the receipt field
       console.log("heres the file:", file)
-      setValue("receipt", {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-      })
+      setValue("receipt", file, { shouldValidate: true })
+      setReceipt(file)
     }
   }
 
@@ -208,6 +291,12 @@ export function ExpenseFormEdit({
       description: "This is a toast message.",
       duration: 2000,
     })
+  }
+
+  const handleDeleteExpense = async () => {
+    console.log("delete expense")
+    // await deleteExpenses([expense.id])
+    // router.push("/expenses")
   }
 
   return (
@@ -285,7 +374,7 @@ export function ExpenseFormEdit({
                 <FormControl>
                   <RSSelect
                     instanceId="fruit"
-                    items={settings.merchants}
+                    items={merchants}
                     setSelectedItem={(item) => {
                       setValue("merchant", item, { shouldValidate: true })
                     }}
@@ -338,7 +427,7 @@ export function ExpenseFormEdit({
                 <FormControl>
                   <RSSelectMulti
                     instanceId="categories"
-                    items={settings.categories}
+                    items={categories}
                     setSelectedItems={(items) => {
                       setValue("categories", items as [string, ...string[]], {
                         shouldValidate: true,
@@ -361,7 +450,7 @@ export function ExpenseFormEdit({
                 <FormControl>
                   <RSSelect
                     instanceId="account"
-                    items={settings.accounts}
+                    items={accounts}
                     setSelectedItem={(item) => {
                       setValue("account", item, { shouldValidate: true }) // Set the value using React Hook Form only
                     }}
@@ -387,7 +476,26 @@ export function ExpenseFormEdit({
             )}
           />
 
-          <Button type="submit">Submit</Button>
+          <div className="flex gap-2">
+            <Button type="submit" variant="default">
+              Save Edits
+            </Button>
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={() => router.push("/expenses")}
+            >
+              Cancel
+            </Button>
+          </div>
+          {/* <Button
+            variant="destructive"
+            type="button"
+            onClick={handleDeleteExpense}
+          >
+            Delete Expense
+          </Button> */}
+          <DeleteItemDialog expenseId={expense.id as string} />
         </form>
       </Form>
     </>

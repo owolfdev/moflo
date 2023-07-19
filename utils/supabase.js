@@ -109,10 +109,10 @@ export const deleteExpenses = async (expenseIds) => {
 
 export const updateExpense = async (expenseId, expenseData) => {
   console.log("from util, updated expense!!!: expense.id:", expenseId)
-  if (typeof expenseData.categories === "string") {
-    const categories = expenseData.categories.split(",")
-    expenseData.categories = categories
-  }
+  // if (typeof expenseData.categories === "string") {
+  //   const categories = expenseData.categories.split(",")
+  //   expenseData.categories = categories
+  // }
 
   const { data, error } = await supabase
     .from("expenses")

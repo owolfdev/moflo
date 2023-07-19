@@ -13,11 +13,11 @@ export function ToastDemo() {
       onClick={() => {
         console.log("toast")
         toast({
-          title: "Scheduled: Catch up ",
-          description: "Friday, February 10, 2023 at 5:57 PM",
+          title: "Expense Saved!",
+          description: "We’ve created your expense for you.",
           duration: 2000,
           action: (
-            <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+            <ToastAction altText="Completed Saving Expense">OK</ToastAction>
           ),
         })
       }}

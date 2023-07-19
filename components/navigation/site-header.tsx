@@ -88,6 +88,18 @@ export function SiteHeader() {
         <div className="flex items-center justify-end flex-1 space-x-4">
           <nav className="flex items-center space-x-1">
             {!user && <LoginDialog />}
+            <Link href={"/"}>
+              <button
+                disabled={!user}
+                className={buttonVariants({
+                  size: "sm",
+                  variant: "ghost",
+                })}
+              >
+                <Icons.add className="w-5 h-5" />
+                <span className="sr-only">Add Expense</span>
+              </button>
+            </Link>
             <Link href={"/settings"}>
               <button
                 disabled={!user}

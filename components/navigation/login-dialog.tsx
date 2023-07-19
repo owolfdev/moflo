@@ -134,7 +134,8 @@ export function LoginDialog() {
               Log in to your account to continue
             </DialogDescription>
           </DialogHeader>
-          <div className="flex justify-center mt-2">
+          {/* log in google */}
+          {/* <div className="flex justify-center mt-2">
             <div className="">
               <Button
                 onClick={handleSignInWithGoogle}
@@ -151,7 +152,7 @@ export function LoginDialog() {
                 </div>
               </Button>
             </div>
-          </div>
+          </div> */}
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="email" className="text-right">
