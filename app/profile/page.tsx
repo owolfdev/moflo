@@ -3,7 +3,9 @@ import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 
+import { Button } from "@/components/ui/button"
 import { LoginDialog } from "@/components/navigation/login-dialog"
+import SignOutButton from "@/components/sign-out-button"
 
 const ProfilePage = async () => {
   const supabase = createServerComponentClient({ cookies })
@@ -31,6 +33,7 @@ const ProfilePage = async () => {
   // if (!user) {
   //   redirect("/unauth")
   // }
+
   return (
     <section className="container grid items-center gap-6 pt-6 pb-8 md:py-10">
       <div className="flex max-w-[980px] flex-col items-start gap-4">
@@ -38,12 +41,13 @@ const ProfilePage = async () => {
           Profile
         </h1>
         <div className="flex flex-col gap-2 text-lg text-muted-foreground">
-          <div>Name: {`${profile.first_name} ${profile.last_name}`}</div>
+          <div>Name: {`${profile?.first_name} ${profile?.last_name}`}</div>
           <div>Email: {user?.email}</div>
         </div>
 
         <div className="">
-          <LoginDialog />
+          {/* <LoginDialog /> */}
+          <SignOutButton />
         </div>
       </div>
     </section>
