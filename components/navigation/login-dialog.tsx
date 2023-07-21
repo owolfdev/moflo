@@ -162,6 +162,7 @@ export function LoginDialog() {
                 id="email"
                 className="col-span-3 input-no-zoom text-lg"
                 onChange={handleChangeInputValue}
+                autoCapitalize="none"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -172,6 +173,7 @@ export function LoginDialog() {
                 id="password"
                 className="col-span-3 input-no-zoom text-lg"
                 onChange={handleChangeInputValue}
+                autoCapitalize="none"
               />
             </div>
           </div>
