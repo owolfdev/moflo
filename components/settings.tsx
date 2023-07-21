@@ -116,6 +116,7 @@ function Settings() {
             <div className="flex flex-col gap-4">
               <Input
                 type="text"
+                className="input-no-zoom text-lg"
                 name="merchant"
                 placeholder="Enter merchant"
                 value={filterValueForMerchants}
@@ -164,6 +165,7 @@ function Settings() {
             <div className="flex flex-col gap-4">
               <Input
                 type="text"
+                className="input-no-zoom text-lg"
                 name="category"
                 placeholder="Enter category"
                 value={filterValueForCategories}
@@ -212,6 +214,7 @@ function Settings() {
             <div className="flex flex-col gap-4">
               <Input
                 type="text"
+                className="input-no-zoom text-lg"
                 name="account"
                 placeholder="Enter account"
                 value={filterValueForAccounts}
