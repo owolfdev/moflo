@@ -11,8 +11,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { ReChartBar } from "@/components/rechart-bar-chart"
-import { ReChartPie } from "@/components/rechart-pie-chart"
+import { ReChartBarFor12MonthOverview } from "@/components/charts/rechart-bar-chart-12-month-overview"
+import { ReChartBarForMonthOverview } from "@/components/charts/rechart-bar-chart-month"
+import { ReChartPie } from "@/components/charts/rechart-pie-chart"
 
 export default async function StatsPage() {
   const supabase = createServerComponentClient({ cookies })
@@ -34,12 +35,26 @@ export default async function StatsPage() {
         <div className="flex flex-col w-full gap-8 h-[500px] mt-8">
           <Card>
             <CardHeader>
+              <CardTitle>Month Overview</CardTitle>
+              {/* <CardDescription>Card Description</CardDescription> */}
+            </CardHeader>
+            <CardContent>
+              <div>
+                <ReChartBarForMonthOverview />
+              </div>
+            </CardContent>
+            {/* <CardFooter>
+            <p>Card Footer</p>
+          </CardFooter> */}
+          </Card>
+          <Card>
+            <CardHeader>
               <CardTitle>12 Month Overview</CardTitle>
               {/* <CardDescription>Card Description</CardDescription> */}
             </CardHeader>
             <CardContent>
               <div>
-                <ReChartBar />
+                <ReChartBarFor12MonthOverview />
               </div>
             </CardContent>
             {/* <CardFooter>

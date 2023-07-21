@@ -20,7 +20,7 @@ interface DataItem {
   color: string
 }
 
-export function ReChartBar() {
+export function ReChartBarFor12MonthOverview() {
   const [dataForChart, setDataForChart] = useState<DataItem[]>([])
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export function ReChartBar() {
 
   return (
     <>
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={450}>
         <BarChart layout="vertical" data={dataForChart}>
           <XAxis
             type="number"

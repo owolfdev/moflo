@@ -52,6 +52,30 @@ export const fetchExpensesForTheLast12Months = async () => {
   return data
 }
 
+export const fetchExpensesForMonthYear = async (year, month) => {
+  // JavaScript counts months from 0 to 11. January is 0. December is 11.
+  // So, we need to adjust the month parameter
+  const adjustedMonth = month - 1
+
+  // first day of the month/year
+  const startDate = new Date(year, adjustedMonth)
+
+  // first day of the next month/year
+  const endDate = new Date(year, adjustedMonth + 1)
+
+  const { data, error } = await supabase
+    .from("expenses")
+    .select("*")
+    .gte("date", startDate.toISOString())
+    .lt("date", endDate.toISOString())
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
 export const getTotalRecordCount = async () => {
   const { count, error } = await supabase
     .from("expenses")
