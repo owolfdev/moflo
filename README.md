@@ -1,3 +1,7 @@
+for MDX watch this:
+
+https://www.youtube.com/watch?v=n2CV6f0vFr4&t=701s
+
 Supabase Pagination
 
 To fetch only the necessary data while preserving pagination in your web app, you can use the OFFSET and LIMIT clauses provided by Supabase. These clauses allow you to specify the starting point and the number of records to retrieve from your table.

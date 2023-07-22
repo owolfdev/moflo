@@ -1,6 +1,6 @@
 export type Expense = {
   id: string
-  created_at: string
+  date: string
   user_id: string | null
   amount: number
   description: string

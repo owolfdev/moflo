@@ -22,6 +22,7 @@ export default async function PaymentPage({
   // const data = expenseData.find((item) => item.id === params.id)
 
   const formatDate = (date: string) => {
+    console.log("date", date)
     const d: Date = new Date(date)
     const options: Intl.DateTimeFormatOptions = {
       month: "long",
@@ -68,7 +69,8 @@ export default async function PaymentPage({
       <div className="flex flex-col gap-2 max-w-[800px]">
         <div className="flex justify-between">
           <div>
-            <div>{formatDate(expense?.created_at!)}</div>
+            <div>{formatDate(expense?.date)}</div>
+            {/* <div>{JSON.stringify(expense.date)}</div> */}
             <div className="text-lg mb-2">
               <span className="text-lg ">&#36;</span>
               <span className="font-bold">{formattedAmountWithCommas}</span>

@@ -76,7 +76,7 @@ export function ReChartBarFor12MonthOverview() {
             tickFormatter={(value) => `฿${value}k`}
           />
           <YAxis
-            width={40}
+            width={60}
             interval={0}
             type="category"
             dataKey="name"
