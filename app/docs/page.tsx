@@ -2,6 +2,9 @@ import fs from "fs"
 import path from "path"
 import React from "react"
 
+import Documentation from "@/app/content/documentation.mdx"
+import Hello from "@/app/content/hello.mdx"
+
 // import matter from "gray-matter"
 // import { MDXRemote } from "next-mdx-remote"
 // import { serialize } from "next-mdx-remote/serialize"
@@ -10,7 +13,7 @@ import React from "react"
 //   mdxSource: IRenderToString;
 // }
 
-const Documentation = () => {
+const DocumentationPage = () => {
   // const getMDXSource = async () => {
   //   const filePath = path.join(process.cwd(), "content", "documentation.mdx")
   //   const fileContents = fs.readFileSync(filePath, "utf8")
@@ -24,14 +27,16 @@ const Documentation = () => {
   return (
     <section className="container grid items-center gap-6 pt-6 pb-8 md:py-10">
       <div className="flex max-w-[980px] flex-col items-start gap-2">
-        <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
+        {/* <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
           Documentation
         </h1>
         <p className="max-w-[700px] text-lg text-muted-foreground">
           Moflo is an open-source expense tracking app built with Next.js and
           Supabase. It&apos;s designed to be easy to use and easy to deploy.
-        </p>
-        {/* <MDXRemote {...mdxSource} /> */}
+        </p> */}
+        <article className="prose lg:prose-xl">
+          <Documentation />
+        </article>
       </div>
     </section>
   )
@@ -42,4 +47,4 @@ const Documentation = () => {
 //   return { props: { mdxSource } }
 // }
 
-export default Documentation
+export default DocumentationPage
